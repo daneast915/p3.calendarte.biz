@@ -1,0 +1,26 @@
+body {
+    font-family:arial, sans-serif;
+    padding: 20px;
+    background: #f6f6f6;
+}
+p {
+	margin: 0 0 1em 0;
+}
+
+#canvas-div {
+    position: relative;
+}
+
+#canvasAll {
+    /*margin:.5em 0 .25em 0;*/
+    border:1px solid #ccc;
+    background: #fff;
+}
+
+#canvasTool { 
+    position: absolute; top: 1px; left: 1px; 
+}
+
+.container {
+    width: 600px;
+}
