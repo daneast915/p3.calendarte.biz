@@ -2,24 +2,23 @@
 <html xml:lang="en"> 
     <head> 
         <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
-        <title>Drawing App</title>
+        <title>Canvas Drawing App</title>
 
         <link rel="stylesheet" href="css/style.css" type="text/css">
+        <link rel="stylesheet" href="css/spectrum.css" type="text/css">
         
-        <script src="js/lib/modernizr.js"></script>
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+        <script src="js/lib/modernizr.js"></script>
         <script src="js/lib/undomanager.js"></script>
-
+        <script src="js/lib/spectrum.js"></script>
+ 
         <!--
         <script src="js/app/GeometryTools.js"></script>
         -->
         <script src="js/app/Shapes.js"></script>
         <script src="js/app/drawApp.js"></script>
-        <!--
-        <script src="js/app/circledrawer.js"></script>
-        -->
-
+ 
 
         <!-- Initialize the SPA module when the document is ready -->
         <script>
@@ -30,30 +29,32 @@
     </head>  
     <body>
         <div class="container">
-            <div class="row">
-                <div class="shape-commands">
-                    <button type="button" class="shape-btn" id="btnLine" href="#">Line</button>
-                    <button type="button" class="shape-btn" id="btnRectangle" href="#">Rectangle</button>
+            <div id="canvas-div">
+                <canvas id="canvasAll" width="800" height="600">
+                    This app cannot be run with this browser. Try Chrome, Firefox, Opera, Safari or Internet Explorer 9+.
+                </canvas>
+            </div>                
+            <div id="shape-commands">
+                <button type="button" class="shape-btn" id="btnLine" href="#">Line</button>
+                <button type="button" class="shape-btn" id="btnRectangle" href="#">Rectangle</button>
 <!--
-                    <button type="button" class="shape-btn" id="btnSquare" href="#">Square</button>
-                    <button type="button" class="shape-btn" id="btnEllipse" href="#">Ellipse</button>
+                <button type="button" class="shape-btn" id="btnSquare" href="#">Square</button>
+                <button type="button" class="shape-btn" id="btnEllipse" href="#">Ellipse</button>
 -->
-                    <button type="button" class="shape-btn" id="btnCircle" href="#">Circle</button>
-                    <button type="button" class="shape-btn" id="btnArc" href="#">Arc</button>
-                    <button type="button" class="shape-btn" id="btnPencil" href="#">Pencil</button>
-                </div>
-                <div class="undo-commands">
-                    <button type="button" class="btn btn-primary" id="btnUndo" href="#">Undo</button>
-                    <button type="button" class="btn btn-primary" id="btnRedo" href="#">Redo</button>
-                    <button type="button" class="btn btn-default pull-right" id="btnClear" href="#">Clear Undo History</button>
-                </div>
-                <div id="canvas-div">
-                    <canvas id="canvasAll" width="800" height="600">
-                        This app cannot be run with this browser. Try Chrome, Firefox, Opera, Safari or Internet Explorer 9+.
-                    </canvas>
-                </div>
-                <p class="comment mute">Click on the area to create circles</p>
+                <button type="button" class="shape-btn" id="btnCircle" href="#">Circle</button>
+                <button type="button" class="shape-btn" id="btnArc" href="#">Arc</button>
+                <button type="button" class="shape-btn" id="btnPencil" href="#">Pencil</button>
             </div>
+            <div id="undo-commands">
+                <button type="button" class="btn btn-primary" id="btnUndo" href="#">Undo</button>
+                <button type="button" class="btn btn-primary" id="btnRedo" href="#">Redo</button>
+                <button type="button" class="btn btn-default pull-right" id="btnClear" href="#">Clear Undo History</button>
+            </div>
+            <!--
+            <div id="bottom-area">
+                <p class="comment mute">Click a tool on the left to start drawing.</p>
+            </div>
+            -->
         </div>
     </body>  
 </html>  

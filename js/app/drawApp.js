@@ -4,26 +4,27 @@
 */
 
 /*jslint           browser : true,   continue : true,
-  devel  : true,    indent : 2,       maxerr  : 50,
+  devel  : true,    indent : 4,       maxerr  : 50,
   newcap : true,     nomen : true,   plusplus : true,
-  regexp : true,    sloppy : true,       vars : false,
+  regexp : true,    sloppy : true,       vars : true,
   white  : true
 */
 /*global $, drawApp */
 
 var drawApp = (function () {
 
-    var currentTool = false;
-    var styleColor = "#000000";
-    var canvasAll;
-    var contextAll;
-    var canvasTool;
-    var contextTool;
-    var canvasWidth;
-    var canvasHeight;
-    var undoManager;
-    var shapes = [];
-    var shapeId = 0;
+    var currentTool = false,
+        styleColor = "#000000",
+        canvasAll,
+        contextAll,
+        canvasTool,
+        contextTool,
+        canvasWidth,
+        canvasHeight,
+        undoManager,
+        shapes = [],
+        shapeId = 0
+    ;
 
 
     function canvasSupport () {
@@ -32,6 +33,11 @@ var drawApp = (function () {
 
     function clearCanvas() {
         contextAll.clearRect(0, 0, canvasWidth, canvasHeight);
+    }
+
+    function clearToolCanvas() {
+        //contextTool.clearRect (0, 0, canvasTool.width, canvasTool.height);
+        drawCanvas();
     }
 
     function drawCanvas() {
@@ -78,13 +84,11 @@ var drawApp = (function () {
         });
     }
 
-    function clearToolCanvas() {
-        contextTool.clearRect (0, 0, canvasTool.width, canvasTool.height);
-    }
 
     function createShape(attrs) {
-        var obj = JSON.parse(attrs);
-        var shape;
+        var obj = JSON.parse(attrs),
+            shape
+        ;
 
         switch (obj.shapeType) {
             case Shapes.ShapeType.Line:
@@ -99,10 +103,13 @@ var drawApp = (function () {
             case Shapes.ShapeType.Arc:
                 shape = new Shapes.Arc (obj);
                 break;
+            default:
+                break;
         }
 
-        if (undefined !== shape)
+        if (undefined !== shape) {
             addShape (shape);
+        }
     }
 
 
@@ -122,7 +129,7 @@ var drawApp = (function () {
             tool.context.beginPath();
             tool.context.moveTo(ev._x, ev._y);
             tool.started = true;
-        }
+        };
             
         // This function is called every time you move the mouse. Obviously, it only 
         // draws if the tool.started state is set to true (when you are holding down 
@@ -132,7 +139,7 @@ var drawApp = (function () {
                 tool.context.lineTo(ev._x, ev._y);
                 tool.context.stroke();
             }
-        }
+        };
 
         // This is called when you release the mouse button.
         this.mouseup = function (ev) {
@@ -141,8 +148,8 @@ var drawApp = (function () {
                 tool.started = false;
                 //img_update();
             }
-        }
-    }
+        };
+    };
  
     // The rectangle tool.
     var RectangleTool = function (context) {
@@ -150,12 +157,13 @@ var drawApp = (function () {
 
         this.started = false;
         this.context = context;
-        this.rectangle;
-
+ 
         this.mousedown = function (ev) {
             tool.started = true;
+            shapeId += 1;
+
             tool.rectangle = new Shapes.Rectangle({
-                id: shapeId += 1,
+                id: shapeId,
                 x: 0,
                 y: 0,
                 width: 100,
@@ -165,7 +173,7 @@ var drawApp = (function () {
             });
             tool.rectangle.x = ev._x;
             tool.rectangle.y = ev._y;
-        }
+        };
 
         this.mousemove = function (ev) {
             if (!tool.started) {
@@ -189,7 +197,7 @@ var drawApp = (function () {
             tool.rectangle.height = h;
 
             tool.rectangle.draw (tool.context);
-        }
+        };
 
         this.mouseup = function (ev) {
             if (tool.started) {
@@ -198,8 +206,8 @@ var drawApp = (function () {
 
                 addShape (tool.rectangle);
             }
-        }
-    }
+        };
+    };
 
     // The line tool.
     var LineTool = function (context) {
@@ -210,9 +218,10 @@ var drawApp = (function () {
 
         this.mousedown = function (ev) {
             tool.started = true;
+            shapeId += 1;
 
             tool.line = new Shapes.Line({
-                id: shapeId += 1,
+                id: shapeId,
                 x: 0,
                 y: 0,
                 endX: 100,
@@ -223,7 +232,7 @@ var drawApp = (function () {
 
             tool.line.x = ev._x;
             tool.line.y = ev._y;
-        }
+        };
 
         this.mousemove = function (ev) {
             if (!tool.started) {
@@ -236,7 +245,7 @@ var drawApp = (function () {
             tool.line.endY = ev._y;
 
             tool.line.draw (tool.context);
-        }
+        };
 
         this.mouseup = function (ev) {
             if (tool.started) {
@@ -245,8 +254,8 @@ var drawApp = (function () {
 
                 addShape (tool.line);
             }
-        }
-    }
+        };
+    };
 
     // The circle tool.
     var CircleTool = function (context) {
@@ -255,15 +264,16 @@ var drawApp = (function () {
         this.started = false;
         this.context = context;
 
-        getLineLength = function (x, y, x0, y0){
+        function getLineLength (x, y, x0, y0){
             return Math.sqrt((x -= x0) * x + (y -= y0) * y);
         }
 
         this.mousedown = function (ev) {
             tool.started = true;
+            shapeId += 1;
 
             tool.circle = new Shapes.Circle({
-                id: shapeId += 1,
+                id: shapeId,
                 x: 0,
                 y: 0,
                 strokeStyle: styleColor,
@@ -273,7 +283,7 @@ var drawApp = (function () {
 
             tool.circle.x = ev._x;
             tool.circle.y = ev._y;
-        }
+        };
 
         this.mousemove = function (ev) {
             if (!tool.started) {
@@ -285,7 +295,7 @@ var drawApp = (function () {
             tool.circle.radius = getLineLength (tool.circle.x, tool.circle.y, ev._x, ev._y);
 
             tool.circle.draw (tool.context);
-        }
+        };
 
         this.mouseup = function (ev) {
             if (tool.started) {
@@ -294,8 +304,8 @@ var drawApp = (function () {
 
                 addShape (tool.circle);
             }
-        }
-    }
+        };
+    };
 
     // The arc tool.
     var ArcTool = function (context) {
@@ -304,11 +314,11 @@ var drawApp = (function () {
         this.started = false;
         this.context = context;
 
-        getLineLength = function (x, y, x0, y0) {
+        function getLineLength (x, y, x0, y0) {
             return Math.sqrt((x -= x0) * x + (y -= y0) * y);
         }
         
-        getDegreeAngle = function (x1, y1, x2, y2, x3, y3) {
+        function getDegreeAngle (x1, y1, x2, y2, x3, y3) {
             var theta1 = Math.atan2( (y1-y2),(x1-x2) );
             var theta2 = Math.atan2( (y3-y2),(x3-x2) );
             var theta = (theta2-theta1)*180/Math.PI;
@@ -318,21 +328,22 @@ var drawApp = (function () {
 
         this.mousedown = function (ev) {
             tool.started = true;
+            shapeId += 1;
  
             tool.arc = new Shapes.Arc({
-                id: shapeId += 1,
+                id: shapeId,
                 x: 0,
                 y: 0,
                 strokeStyle: styleColor,
                 lineWidth: 5,
                 radius: 50,
                 angle: 90,
-                counterclockwise: false            
+                counterclockwise: true            
             });        
 
             tool.arc.x = ev._x;
             tool.arc.y = ev._y;
-        }
+        };
 
         this.mousemove = function (ev) {
             if (!tool.started) {
@@ -345,7 +356,7 @@ var drawApp = (function () {
             tool.arc.angle = getDegreeAngle (0, 0, tool.arc.x, tool.arc.y, ev._x, ev._y);
 
             tool.arc.draw (tool.context);
-        }
+        };
 
         this.mouseup = function (ev) {
             if (tool.started) {
@@ -354,8 +365,8 @@ var drawApp = (function () {
 
                 addShape (tool.arc);
             }
-        }
-    }
+        };
+    };
 
     var initModule = function () {
     
@@ -380,26 +391,10 @@ var drawApp = (function () {
         canvasWidth = $canvasAll.width();
         canvasHeight = $canvasAll.height();
 
-        // Add the temporary canvas.
-        var container = canvasAll.parentNode;
-        canvasTool = document.createElement('canvas');
-        if (!canvasTool) {
-            alert('Error: I cannot create a new canvas element!');
-            return;
-        }
+        contextTool = contextAll; // canvasTool.getContext('2d');  
 
-        canvasTool.id     = 'canvasTool';
-        canvasTool.width  = canvasAll.width;
-        canvasTool.height = canvasAll.height;
-        container.appendChild(canvasTool);
-
-        contextTool = canvasTool.getContext('2d');  
-
-        var $canvasTool = $("#canvasTool");
-        $canvasTool.mousedown (ev_canvas);
-        $canvasTool.mousemove (ev_canvas);
-        $canvasTool.mouseup (ev_canvas);
-
+        var $canvasTool = $canvasAll; // $("#canvasTool");
+ 
         // The general-purpose event handler. This function just determines the mouse 
         // position relative to the canvas element.
         function ev_canvas (ev) {
@@ -415,6 +410,10 @@ var drawApp = (function () {
                 }
             }
         }
+
+        $canvasTool.mousedown (ev_canvas);
+        $canvasTool.mousemove (ev_canvas);
+        $canvasTool.mouseup (ev_canvas);
 
         $('#btnUndo').click (function () {
             undoManager.undo();
