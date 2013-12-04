@@ -48,16 +48,32 @@ var Shapes;
             this.width = options.width;
             if (undefined !== options.height)
                 this.height = options.height;
+            if (undefined !== options.fill)
+                this.fill = options.fill;
+else
+                this.fill = false;
             if (undefined !== options.fillStyle)
                 this.fillStyle = options.fillStyle;
         }
         Rectangle.prototype.draw = function (context) {
             context.strokeStyle = this.strokeStyle;
-            if (undefined === this.fillStyle)
+            context.lineWidth = this.lineWidth;
+            if (!this.fill) {
                 context.strokeRect(this.x, this.y, this.width, this.height);
-            else {
+            } else {
+                var endX = this.x + this.width - 1;
+                var endY = this.y + this.height - 1;
+                context.beginPath();
+                context.moveTo(this.x, this.y);
+                context.lineTo(endX, this.y);
+                context.lineTo(endX, endY);
+                context.lineTo(this.x, endY);
+                context.lineTo(this.x, this.y - (this.lineWidth / 2));
+                context.stroke();
+                context.closePath();
+
                 context.fillStyle = this.fillStyle;
-                context.fillRect(this.x, this.y, this.width, this.height);
+                context.fill();
             }
         };
         return Rectangle;
@@ -77,6 +93,7 @@ var Shapes;
         }
         Line.prototype.draw = function (context) {
             context.strokeStyle = this.strokeStyle;
+            context.lineWidth = this.lineWidth;
             context.beginPath();
             context.moveTo(this.x, this.y);
             context.lineTo(this.endX, this.endY);
@@ -98,17 +115,23 @@ var Shapes;
             this.radius = options.radius;
             if (undefined !== options.fill)
                 this.fill = options.fill;
-            else
+else
                 this.fill = false;
             if (undefined !== options.fillStyle)
                 this.fillStyle = options.fillStyle;
         }
         Circle.prototype.draw = function (context) {
             context.strokeStyle = this.strokeStyle;
+            context.lineWidth = this.lineWidth;
             context.beginPath();
             context.arc(this.x, this.y, this.radius, (Math.PI / 180) * 0, (Math.PI / 180) * 360, false);
             context.stroke();
             context.closePath();
+
+            if (this.fill) {
+                context.fillStyle = this.fillStyle;
+                context.fill();
+            }
         };
         return Circle;
     })(Shape);
@@ -121,13 +144,14 @@ var Shapes;
         __extends(Arc, _super);
         function Arc(options) {
             _super.call(this, options);
-            this.shapeType = Shapes.ShapeType.Circle;
+            this.shapeType = Shapes.ShapeType.Arc;
             this.radius = options.radius;
             this.angle = options.angle;
             this.counterclockwise = options.counterclockwise;
         }
         Arc.prototype.draw = function (context) {
             context.strokeStyle = this.strokeStyle;
+            context.lineWidth = this.lineWidth;
             context.beginPath();
             context.arc(this.x, this.y, this.radius, (Math.PI / 180) * 0, (Math.PI / 180) * this.angle, this.counterclockwise);
             context.stroke();

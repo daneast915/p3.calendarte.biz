@@ -54,6 +54,7 @@ module Shapes {
 	export interface IRectangleOptions extends IShapeOptions {
 		width: number;
 	 	height: number;
+	 	fill?: boolean;
 	 	fillStyle?: string;
 	 }
 
@@ -73,6 +74,10 @@ module Shapes {
 	 		this.width = options.width;
 	 		if (undefined !== options.height)
 	 			this.height = options.height;
+	 		if (undefined !== options.fill)
+	 			this.fill = options.fill;
+	 		else
+	 			this.fill = false;
 	 		if (undefined !== options.fillStyle)
 	 			this.fillStyle = options.fillStyle;
 	 	}
@@ -80,13 +85,25 @@ module Shapes {
 	 	draw (context: CanvasRenderingContext2D) {
 	 		context.strokeStyle = this.strokeStyle;
 	 		context.lineWidth = this.lineWidth;
-	 		if (undefined === this.fillStyle)
+	 		if (!this.fill) {
 				context.strokeRect (this.x, this.y, this.width, this.height);
-			else {
-				context.fillStyle = this.fillStyle;
-				context.fillRect (this.x, this.y, this.width, this.height);
 			}
-	 	}
+			else {
+				var endX = this.x + this.width - 1;
+				var endY = this.y + this.height - 1;
+				context.beginPath();
+				context.moveTo (this.x, this.y);
+				context.lineTo (endX, this.y);
+				context.lineTo (endX, endY);
+				context.lineTo (this.x, endY);
+				context.lineTo (this.x, this.y-(this.lineWidth/2));
+				context.stroke();						
+				context.closePath();
+
+				context.fillStyle = this.fillStyle;
+				context.fill();
+			}
+		}
 	}
 
 	export interface ILineOptions extends IShapeOptions {
@@ -154,6 +171,11 @@ module Shapes {
 			context.arc (this.x, this.y, this.radius, (Math.PI/180)*0, (Math.PI/180)*360, false);
 			context.stroke();
 			context.closePath();
+
+			if (this.fill) {
+				context.fillStyle = this.fillStyle;
+				context.fill();
+			}
 	 	}
 	}
 
@@ -174,7 +196,7 @@ module Shapes {
 
 	 	constructor (options: IArcOptions) {
 	 		super(options);
-	 		this.shapeType = ShapeType.Circle;
+	 		this.shapeType = ShapeType.Arc;
 	 		this.radius = options.radius;
 	 		this.angle = options.angle;
 	 		this.counterclockwise = options.counterclockwise;

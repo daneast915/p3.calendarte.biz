@@ -14,7 +14,10 @@
 var drawApp = (function () {
 
     var currentTool = false,
-        styleColor = "#000000",
+        strokeStyle = "#000000",
+        fillStyle = "#0000ff",
+        fillOption = true,
+        lineWidth = 5,
         canvasAll,
         contextAll,
         canvasTool,
@@ -112,6 +115,48 @@ var drawApp = (function () {
         }
     }
 
+    function initColorPickers() {
+        $("#lineColor").spectrum({
+            color: strokeStyle,
+            showPalette: true,
+            showSelectionPalette: true,            
+            change: function(color) {
+                if (null != color && undefined != color) {
+                    var hex = color.toHexString(); // #ff0000
+                    if (undefined != hex)
+                        strokeStyle = hex;
+                }
+            }
+        });  
+
+        $("#widthSpinner").spinner()
+            .spinner( "value", lineWidth )
+            .spinner({
+                spin: function( event, ui ) {
+                    lineWidth = ui.value;
+                }
+            });
+ 
+        $("#fillOption").prop('checked', fillOption);
+        $("#fillOption").change (function() {
+            fillOption = $("#fillOption").prop('checked');
+        });
+ 
+        $("#fillColor").spectrum({
+            color: fillStyle,
+            showPalette: true,
+            showSelectionPalette: true,  
+            change: function(color) {
+                if (null != color && undefined != color) {
+                    var hex = color.toHexString(); // #ff0000
+                    if (undefined != hex)
+                        fillStyle = hex;
+                }
+            }
+        });  
+ 
+    }
+
 
     // This painting tool works like a drawing pencil which tracks the mouse 
     // movements.
@@ -122,10 +167,12 @@ var drawApp = (function () {
         this.started = false;
         this.context = context;
 
+        $('#fillOptions').hide();  
+
         // This is called when you start holding down the mouse button.
         // This starts the pencil drawing.
         this.mousedown = function (ev) {
-            tool.context.strokeStyle = styleColor;
+            tool.context.strokeStyle = strokeStyle;
             tool.context.beginPath();
             tool.context.moveTo(ev._x, ev._y);
             tool.started = true;
@@ -157,7 +204,9 @@ var drawApp = (function () {
 
         this.started = false;
         this.context = context;
- 
+
+        $('#fillOptions').show(); 
+
         this.mousedown = function (ev) {
             tool.started = true;
             shapeId += 1;
@@ -168,8 +217,10 @@ var drawApp = (function () {
                 y: 0,
                 width: 100,
                 height: 100,
-                strokeStyle: styleColor,
-                lineWidth: 5
+                strokeStyle: strokeStyle,
+                lineWidth: lineWidth,
+                fill: fillOption,
+                fillStyle: fillStyle
             });
             tool.rectangle.x = ev._x;
             tool.rectangle.y = ev._y;
@@ -216,6 +267,8 @@ var drawApp = (function () {
         this.started = false;
         this.context = context;
 
+        $('#fillOptions').hide(); 
+
         this.mousedown = function (ev) {
             tool.started = true;
             shapeId += 1;
@@ -226,8 +279,8 @@ var drawApp = (function () {
                 y: 0,
                 endX: 100,
                 endY: 100,
-                strokeStyle: styleColor,
-                lineWidth: 5
+                strokeStyle: strokeStyle,
+                lineWidth: lineWidth
             });
 
             tool.line.x = ev._x;
@@ -264,6 +317,8 @@ var drawApp = (function () {
         this.started = false;
         this.context = context;
 
+        $('#fillOptions').show(); 
+
         function getLineLength (x, y, x0, y0){
             return Math.sqrt((x -= x0) * x + (y -= y0) * y);
         }
@@ -276,9 +331,11 @@ var drawApp = (function () {
                 id: shapeId,
                 x: 0,
                 y: 0,
-                strokeStyle: styleColor,
-                lineWidth: 5,
-                radius: 50
+                strokeStyle: strokeStyle,
+                lineWidth: lineWidth,
+                radius: 50,
+                fill: fillOption,
+                fillStyle: fillStyle
             });      
 
             tool.circle.x = ev._x;
@@ -314,6 +371,8 @@ var drawApp = (function () {
         this.started = false;
         this.context = context;
 
+        $('#fillOptions').hide(); 
+
         function getLineLength (x, y, x0, y0) {
             return Math.sqrt((x -= x0) * x + (y -= y0) * y);
         }
@@ -334,8 +393,8 @@ var drawApp = (function () {
                 id: shapeId,
                 x: 0,
                 y: 0,
-                strokeStyle: styleColor,
-                lineWidth: 5,
+                strokeStyle: strokeStyle,
+                lineWidth: lineWidth,
                 radius: 50,
                 angle: 90,
                 counterclockwise: true            
@@ -414,6 +473,8 @@ var drawApp = (function () {
         $canvasTool.mousedown (ev_canvas);
         $canvasTool.mousemove (ev_canvas);
         $canvasTool.mouseup (ev_canvas);
+
+        initColorPickers();
 
         $('#btnUndo').click (function () {
             undoManager.undo();

@@ -1,5 +1,5 @@
 body {
-    font-family:arial, sans-serif;
+    font-family: arial, sans-serif;
     /*padding: 20px;*/
     background: #f6f6f6;
 }
@@ -71,4 +71,12 @@ p {
     overflow: visible;
     position: absolute;
     right: 0;
+}
+
+label {
+    font-size: smaller;
+}
+
+#widthSpinner {
+    font-size: smaller;
 }

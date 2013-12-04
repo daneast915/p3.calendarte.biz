@@ -4,6 +4,7 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
         <title>Canvas Drawing App</title>
 
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" href="css/style.css" type="text/css">
         <link rel="stylesheet" href="css/spectrum.css" type="text/css">
         
@@ -49,6 +50,18 @@
                 <button type="button" class="btn btn-primary" id="btnUndo" href="#">Undo</button>
                 <button type="button" class="btn btn-primary" id="btnRedo" href="#">Redo</button>
                 <button type="button" class="btn btn-default pull-right" id="btnClear" href="#">Clear Undo History</button>
+
+                <label for="lineColor">Line Color:</label>
+                <input type='text' id='lineColor' />
+
+                <label for="widthSpinner">Line Width:</label>
+                <input id="widthSpinner" name="lineWidth" />
+
+                <span id="fillOptions">
+                    <label for="fillOption">Fill:</label>
+                    <input type="checkbox" id="fillOption" />  
+                    <input type='text' id='fillColor' />      
+                </span>
             </div>
             <!--
             <div id="bottom-area">
