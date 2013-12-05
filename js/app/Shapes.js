@@ -16,12 +16,14 @@ var Shapes;
         Square: 3,
         Circle: 4,
         Ellipse: 5,
-        Arc: 6
+        Arc: 6,
+        PencilDrawing: 7
     };
 
-    //
-    // Shape
-    //
+    /**
+    * @class Shape
+    * @classdesc The base shape class.
+    */
     var Shape = (function () {
         function Shape(options) {
             this.id = options.id;
@@ -37,9 +39,10 @@ var Shapes;
     })();
     Shapes.Shape = Shape;
 
-    //
-    // Rectangle
-    //
+    /**
+    * @class Rectangle
+    * @classdesc The rectangle shape.
+    */
     var Rectangle = (function (_super) {
         __extends(Rectangle, _super);
         function Rectangle(options) {
@@ -80,9 +83,10 @@ else
     })(Shape);
     Shapes.Rectangle = Rectangle;
 
-    //
-    // Line
-    //
+    /**
+    * @class Line
+    * @classdesc The line shape.
+    */
     var Line = (function (_super) {
         __extends(Line, _super);
         function Line(options) {
@@ -104,9 +108,10 @@ else
     })(Shape);
     Shapes.Line = Line;
 
-    //
-    // Circle
-    //
+    /**
+    * @class Circle
+    * @classdesc The circle shape.
+    */
     var Circle = (function (_super) {
         __extends(Circle, _super);
         function Circle(options) {
@@ -137,9 +142,10 @@ else
     })(Shape);
     Shapes.Circle = Circle;
 
-    //
-    // Arc
-    //
+    /**
+    * @class Arc
+    * @classdesc The circle shape.
+    */
     var Arc = (function (_super) {
         __extends(Arc, _super);
         function Arc(options) {
@@ -160,4 +166,42 @@ else
         return Arc;
     })(Shape);
     Shapes.Arc = Arc;
+
+    /**
+    * @class Line
+    * @classdesc The line shape.
+    */
+    var PencilDrawing = (function (_super) {
+        __extends(PencilDrawing, _super);
+        function PencilDrawing(options) {
+            _super.call(this, options);
+            this.shapeType = Shapes.ShapeType.PencilDrawing;
+            this.endX = options.endX;
+            this.endY = options.endY;
+            if (undefined !== options.points)
+                this.points = options.points;
+else
+                this.points = [];
+        }
+        PencilDrawing.prototype.addPoint = function (point) {
+            this.points.push(point);
+        };
+
+        PencilDrawing.prototype.draw = function (context) {
+            context.strokeStyle = this.strokeStyle;
+            context.lineWidth = this.lineWidth;
+            context.beginPath();
+            context.moveTo(this.x, this.y);
+
+            var i, len = this.points.length;
+            for (i = 0; i < len; i += 1) {
+                context.lineTo(this.points[i].x, this.points[i].y);
+            }
+
+            context.stroke();
+            context.closePath();
+        };
+        return PencilDrawing;
+    })(Shape);
+    Shapes.PencilDrawing = PencilDrawing;
 })(Shapes || (Shapes = {}));

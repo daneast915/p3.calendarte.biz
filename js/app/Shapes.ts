@@ -10,7 +10,8 @@ module Shapes {
 		Square : 3,
 		Circle : 4,
 		Ellipse : 5,
-		Arc : 6
+		Arc : 6,
+		PencilDrawing : 7
 	};
 
 	export interface IShapeOptions {
@@ -26,9 +27,15 @@ module Shapes {
 	 	draw: (context: CanvasRenderingContext2D) => void;
 	}
 
-	//
-	// Shape
-	//
+	export interface IPoint {
+	 	x: number;
+	 	y: number;
+	}
+
+    /**
+    * @class Shape
+    * @classdesc The base shape class.
+    */
 	export class Shape implements IShape {
 
 		shapeType: number;
@@ -58,10 +65,11 @@ module Shapes {
 	 	fillStyle?: string;
 	 }
 
-	//
-	// Rectangle
-	//
-	export class Rectangle extends Shape {
+    /**
+    * @class Rectangle
+    * @classdesc The rectangle shape.
+    */
+    export class Rectangle extends Shape {
 
 	 	width: number;
 	 	height: number;
@@ -111,9 +119,10 @@ module Shapes {
 	 	endY: number;
 	}
 
-	//
-	// Line
-	//
+    /**
+    * @class Line
+    * @classdesc The line shape.
+    */	
 	export class Line extends Shape {
 
 	 	endX: number;
@@ -143,9 +152,10 @@ module Shapes {
 	 	fillStyle?: string;	
 	 }
 
-	//
-	// Circle
-	//
+    /**
+    * @class Circle
+    * @classdesc The circle shape.
+    */	
 	export class Circle extends Shape {
 
 		radius: number;
@@ -185,9 +195,10 @@ module Shapes {
 	 	counterclockwise: boolean;	
 	 }
 
-	//
-	// Arc
-	//
+    /**
+    * @class Arc
+    * @classdesc The circle shape.
+    */	
 	export class Arc extends Shape {
 
 		radius: number;
@@ -207,6 +218,53 @@ module Shapes {
 	 		context.lineWidth = this.lineWidth;
 			context.beginPath();
 			context.arc (this.x, this.y, this.radius, (Math.PI/180)*0, (Math.PI/180)*this.angle, this.counterclockwise);
+			context.stroke();
+			context.closePath();
+	 	}
+	}
+
+	export interface IPencilDrawingOptions extends IShapeOptions {
+		endX: number;
+	 	endY: number;
+	 	points?: IPoint[];
+	}
+
+    /**
+    * @class Line
+    * @classdesc The line shape.
+    */	
+	export class PencilDrawing extends Shape {
+
+	 	endX: number;
+	 	endY: number;
+	 	points: IPoint[];
+
+	 	constructor (options: IPencilDrawingOptions) {
+	 		super(options);
+	 		this.shapeType = ShapeType.PencilDrawing;
+	 		this.endX = options.endX;
+	 		this.endY = options.endY;
+	 		if (undefined !== options.points)
+	 			this.points = options.points;
+	 		else
+	 			this.points = [];
+	 	}
+
+	 	addPoint(point: IPoint) {
+	 		this.points.push(point);
+	 	}
+
+	 	draw (context: CanvasRenderingContext2D) {
+	 		context.strokeStyle = this.strokeStyle;
+	 		context.lineWidth = this.lineWidth;
+			context.beginPath();
+			context.moveTo (this.x, this.y);
+
+			var i, len = this.points.length;
+			for (i = 0; i < len; i += 1) {
+				context.lineTo (this.points[i].x, this.points[i].y);
+			}
+
 			context.stroke();
 			context.closePath();
 	 	}

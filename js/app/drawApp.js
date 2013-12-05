@@ -30,19 +30,35 @@ var drawApp = (function () {
     ;
 
 
+    /**
+     * Determines is the browser supports the canvas API
+     * @return {Boolean} true is canvas is supported
+     */
     function canvasSupport () {
         return Modernizr.canvas;
     }
 
+    /**
+     * Clears all contents from the canvas context
+     */
     function clearCanvas() {
         contextAll.clearRect(0, 0, canvasWidth, canvasHeight);
     }
 
+    /**
+     * Adds two numbers
+     * @param {Number} a 
+     * @return {Number} sum
+     */
     function clearToolCanvas() {
-        //contextTool.clearRect (0, 0, canvasTool.width, canvasTool.height);
         drawCanvas();
     }
 
+    /**
+     * Adds two numbers
+     * @param {Number} a 
+     * @return {Number} sum
+     */
     function drawCanvas() {
         clearCanvas();
         var i,
@@ -53,6 +69,11 @@ var drawApp = (function () {
         }
     }
 
+    /**
+     * Adds two numbers
+     * @param {Number} a 
+     * @return {Number} sum
+     */
     function removeShape(id) {
         var i = 0, index = -1;
 
@@ -69,6 +90,11 @@ var drawApp = (function () {
         drawCanvas();
     }
 
+    /**
+     * Adds two numbers
+     * @param {Number} a 
+     * @return {Number} sum
+     */
     function addShape(shape) {
         shapes.push(shape);
 
@@ -88,6 +114,11 @@ var drawApp = (function () {
     }
 
 
+    /**
+     * Adds two numbers
+     * @param {Number} a 
+     * @return {Number} sum
+     */
     function createShape(attrs) {
         var obj = JSON.parse(attrs),
             shape
@@ -106,6 +137,9 @@ var drawApp = (function () {
             case Shapes.ShapeType.Arc:
                 shape = new Shapes.Arc (obj);
                 break;
+             case Shapes.ShapeType.PencilDrawing:
+                shape = new Shapes.PencilDrawing (obj);
+                break;               
             default:
                 break;
         }
@@ -115,7 +149,12 @@ var drawApp = (function () {
         }
     }
 
-    function initColorPickers() {
+    /**
+     * Adds two numbers
+     * @param {Number} a 
+     * @return {Number} sum
+     */
+    function initDrawingOptions() {
         $("#lineColor").spectrum({
             color: strokeStyle,
             showPalette: true,
@@ -158,9 +197,11 @@ var drawApp = (function () {
     }
 
 
-    // This painting tool works like a drawing pencil which tracks the mouse 
-    // movements.
-    // The drawing pencil.
+
+    /**
+    * @class PencilTool
+    * @classdesc This painting tool works like a drawing pencil which tracks the mouse movements..
+    */
     var PencilTool = function (context) {
         var tool = this;
 
@@ -172,20 +213,34 @@ var drawApp = (function () {
         // This is called when you start holding down the mouse button.
         // This starts the pencil drawing.
         this.mousedown = function (ev) {
-            tool.context.strokeStyle = strokeStyle;
-            tool.context.beginPath();
-            tool.context.moveTo(ev._x, ev._y);
             tool.started = true;
+            shapeId += 1;
+
+            tool.pencilDrawing = new Shapes.PencilDrawing ({
+                id: shapeId,
+                x: ev._x,
+                y: ev._y,
+                strokeStyle: strokeStyle,
+                lineWidth: lineWidth
+            });
         };
             
         // This function is called every time you move the mouse. Obviously, it only 
         // draws if the tool.started state is set to true (when you are holding down 
         // the mouse button).
         this.mousemove = function (ev) {
-            if (tool.started) {
-                tool.context.lineTo(ev._x, ev._y);
-                tool.context.stroke();
+            if (!tool.started) {
+                return;
             }
+
+            clearToolCanvas(); 
+
+            var point = {
+                x: ev._x, 
+                y: ev._y
+            };
+            tool.pencilDrawing.addPoint (point);
+            tool.pencilDrawing.draw (tool.context);
         };
 
         // This is called when you release the mouse button.
@@ -193,12 +248,16 @@ var drawApp = (function () {
             if (tool.started) {
                 tool.mousemove(ev);
                 tool.started = false;
-                //img_update();
+
+                addShape (tool.pencilDrawing);
             }
         };
     };
  
-    // The rectangle tool.
+    /**
+    * @class RectangleTool
+    * @classdesc The rectangle tool - can draw stroked rectangles or filled rectangles
+    */
     var RectangleTool = function (context) {
         var tool = this;
 
@@ -213,17 +272,15 @@ var drawApp = (function () {
 
             tool.rectangle = new Shapes.Rectangle({
                 id: shapeId,
-                x: 0,
-                y: 0,
-                width: 100,
-                height: 100,
+                x: ev._x,
+                y: ev._y,
+                width: 1,
+                height: 1,
                 strokeStyle: strokeStyle,
                 lineWidth: lineWidth,
                 fill: fillOption,
                 fillStyle: fillStyle
             });
-            tool.rectangle.x = ev._x;
-            tool.rectangle.y = ev._y;
         };
 
         this.mousemove = function (ev) {
@@ -236,11 +293,11 @@ var drawApp = (function () {
                 w = Math.abs(ev._x - tool.rectangle.x),
                 h = Math.abs(ev._y - tool.rectangle.y);
 
-            clearToolCanvas(); 
-
             if (!w || !h) {
                 return;
             }
+
+            clearToolCanvas(); 
 
             tool.rectangle.x = x;
             tool.rectangle.y = y;
@@ -260,7 +317,10 @@ var drawApp = (function () {
         };
     };
 
-    // The line tool.
+    /**
+    * @class LineTool
+    * @classdesc The line tool.
+    */
     var LineTool = function (context) {
         var tool = this;
         
@@ -275,16 +335,13 @@ var drawApp = (function () {
 
             tool.line = new Shapes.Line({
                 id: shapeId,
-                x: 0,
-                y: 0,
-                endX: 100,
-                endY: 100,
+                x: ev._x,
+                y: ev._y,
+                endX: ev._x,
+                endY: ev._y,
                 strokeStyle: strokeStyle,
                 lineWidth: lineWidth
             });
-
-            tool.line.x = ev._x;
-            tool.line.y = ev._y;
         };
 
         this.mousemove = function (ev) {
@@ -310,7 +367,10 @@ var drawApp = (function () {
         };
     };
 
-    // The circle tool.
+    /**
+    * @class CircleTool
+    * @classdesc The circle tool.
+    */
     var CircleTool = function (context) {
         var tool = this;
         
@@ -329,17 +389,14 @@ var drawApp = (function () {
 
             tool.circle = new Shapes.Circle({
                 id: shapeId,
-                x: 0,
-                y: 0,
+                x: ev._x,
+                y: ev._y,
                 strokeStyle: strokeStyle,
                 lineWidth: lineWidth,
                 radius: 50,
                 fill: fillOption,
                 fillStyle: fillStyle
             });      
-
-            tool.circle.x = ev._x;
-            tool.circle.y = ev._y;
         };
 
         this.mousemove = function (ev) {
@@ -364,7 +421,10 @@ var drawApp = (function () {
         };
     };
 
-    // The arc tool.
+    /**
+    * @class ArcTool
+    * @classdesc The arc tool.
+    */
     var ArcTool = function (context) {
         var tool = this;
 
@@ -391,17 +451,14 @@ var drawApp = (function () {
  
             tool.arc = new Shapes.Arc({
                 id: shapeId,
-                x: 0,
-                y: 0,
+                x: ev._x,
+                y: ev._y,
                 strokeStyle: strokeStyle,
                 lineWidth: lineWidth,
                 radius: 50,
                 angle: 90,
                 counterclockwise: true            
             });        
-
-            tool.arc.x = ev._x;
-            tool.arc.y = ev._y;
         };
 
         this.mousemove = function (ev) {
@@ -427,6 +484,12 @@ var drawApp = (function () {
         };
     };
 
+
+    /**
+     * Adds two numbers
+     * @param {Number} a 
+     * @return {Number} sum
+     */
     var initModule = function () {
     
         if (!canvasSupport ()) {
@@ -474,7 +537,7 @@ var drawApp = (function () {
         $canvasTool.mousemove (ev_canvas);
         $canvasTool.mouseup (ev_canvas);
 
-        initColorPickers();
+        initDrawingOptions();
 
         $('#btnUndo').click (function () {
             undoManager.undo();
