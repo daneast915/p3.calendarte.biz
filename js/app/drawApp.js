@@ -514,7 +514,7 @@ var drawApp = (function () {
         canvasHeight = $drawingCanvas.height();
  
         //
-        // The general-purpose event handler. This function just determines the mouse 
+        // The general-purpose event handler. This function determines the mouse 
         // position relative to the canvas element.
         //
         function ev_canvas (ev) {
@@ -561,11 +561,23 @@ var drawApp = (function () {
         $('#btnSave').click (function () {
             saveAsPNG();
         });
+        
+        $('#tool_pencil').click (function () {
+            $('.tool_button').removeClass('tool_button_current');
+            $('#tool_pencil').addClass ('tool_button_current');
+            currentTool = new PencilTool (drawingContext);
+        });
 
         $('#tool_line').click (function () {
             $('.tool_button').removeClass('tool_button_current');
             $('#tool_line').addClass ('tool_button_current');
             currentTool = new LineTool (drawingContext);
+        });
+
+        $('#tool_rectangle').click (function () {
+            $('.tool_button').removeClass('tool_button_current');
+            $('#tool_rectangle').addClass ('tool_button_current');
+            currentTool = new RectangleTool (drawingContext);
         });
 
         $('#tool_circle').click (function () {
@@ -578,18 +590,6 @@ var drawApp = (function () {
             $('.tool_button').removeClass('tool_button_current');
             $('#tool_arc').addClass ('tool_button_current');
             currentTool = new ArcTool (drawingContext);
-        });
-
-        $('#tool_rectangle').click (function () {
-            $('.tool_button').removeClass('tool_button_current');
-            $('#tool_rectangle').addClass ('tool_button_current');
-            currentTool = new RectangleTool (drawingContext);
-        });
-
-        $('#tool_pencil').click (function () {
-            $('.tool_button').removeClass('tool_button_current');
-            $('#tool_pencil').addClass ('tool_button_current');
-            currentTool = new PencilTool (drawingContext);
         });
 
         //
