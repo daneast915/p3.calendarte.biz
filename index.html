@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xml:lang="en"> 
+<html> 
     <head> 
         <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
         <title>Canvas Drawing App</title>
@@ -33,23 +33,23 @@
     <body>
         <div class="container">
             <div id="canvas-div">
-                <canvas id="canvasAll" width="800" height="600">
+                <canvas id="drawingCanvas" width="800" height="600">
                     This app cannot be run with this browser. Try Chrome, Firefox, Opera, Safari or Internet Explorer 9+.
                 </canvas>
             </div>                
 
             <div id="shape-commands">
-                <div class="tool_button" id="tool_pencil" title="Pencil Tool" /></div>
+                <div class="tool_button" id="tool_pencil" title="Pencil Tool"></div>
                 <div class="tool_button" id="tool_line" title="Line Tool"></div>
                 <div class="tool_button" id="tool_rectangle" title="Rectangle Tool"></div>
                 <div class="tool_button" id="tool_circle" title="Circle Tool"></div>
             </div>
 
             <div id="top-options">
-                <button class="history-button" type="button" id="btnUndo" href="#">Undo</button>
-                <button class="history-button" type="button" id="btnRedo" href="#">Redo</button>
-                <button class="history-button" type="button" id="btnClear" href="#">Clear History</button>
-                <button class="history-button" type="button" id="btnSave" href="#">Save</button>
+                <button class="history-button" type="button" id="btnUndo">Undo</button>
+                <button class="history-button" type="button" id="btnRedo">Redo</button>
+                <button class="history-button" type="button" id="btnClear">Clear History</button>
+                <button class="history-button" type="button" id="btnSave">Save</button>
 
                 <span class="separator"> </span>
 

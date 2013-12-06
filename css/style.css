@@ -4,7 +4,8 @@
  */
 
 body {
-    font-family: arial, sans-serif;
+    font-family: "OpenSans", Frutiger, "Frutiger Linotype", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", 
+                 Univers, Calibri, Arial, Helvetica, sans-serif;
     background: #f6f6f6;
 }
 
@@ -24,17 +25,9 @@ p {
     text-align: center;
 }
 
-#canvasAll,
-#canvasTool {
-    /*margin:.5em 0 .25em 0;*/
+#drawingCanvas {
     border:1px solid #ccc;
     background: #fff;
-}
-
-#canvasTool { 
-    position: absolute; 
-    top: 40px; 
-    left: 40px;
 }
 
 .container {
