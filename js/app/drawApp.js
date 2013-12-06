@@ -46,18 +46,15 @@ var drawApp = (function () {
     }
 
     /**
-     * Adds two numbers
-     * @param {Number} a 
-     * @return {Number} sum
+     * Clears the contents of the tool canvas
      */
     function clearToolCanvas() {
         drawCanvas();
     }
 
     /**
-     * Adds two numbers
-     * @param {Number} a 
-     * @return {Number} sum
+     * Draws all the shapes currently in the shapes array.
+     * Calls the draw(context) method on each Shape object. 
      */
     function drawCanvas() {
         clearCanvas();
@@ -70,9 +67,8 @@ var drawApp = (function () {
     }
 
     /**
-     * Adds two numbers
-     * @param {Number} a 
-     * @return {Number} sum
+     * Removes a shape from the shapes array
+     * @param {Number} id - id of the shape in the array 
      */
     function removeShape(id) {
         var i = 0, index = -1;
@@ -91,9 +87,8 @@ var drawApp = (function () {
     }
 
     /**
-     * Adds two numbers
-     * @param {Number} a 
-     * @return {Number} sum
+     * Adds a shape to the shapes array
+     * @param {Object} shape - a Shape object - instance of one of the Shapes in Shapes.js
      */
     function addShape(shape) {
         shapes.push(shape);
@@ -115,9 +110,8 @@ var drawApp = (function () {
 
 
     /**
-     * Adds two numbers
-     * @param {Number} a 
-     * @return {Number} sum
+     * Creates a shape from attributes stored in the UndoManager buffer
+     * @param {Object} attributes from the Undo buffer 
      */
     function createShape(attrs) {
         var obj = JSON.parse(attrs),
@@ -150,9 +144,7 @@ var drawApp = (function () {
     }
 
     /**
-     * Adds two numbers
-     * @param {Number} a 
-     * @return {Number} sum
+     * Initializes all of the drawing options
      */
     function initDrawingOptions() {
         $("#lineColor").spectrum({
@@ -194,6 +186,24 @@ var drawApp = (function () {
             }
         });  
  
+    }
+
+    /**
+     * Update the undo/redo enabled status
+     */
+    function updateUI() {
+        $('#btnUndo').prop('disabled', !undoManager.hasUndo());
+        $('#btnRedo').prop('disabled', !undoManager.hasRedo());
+    }
+
+    /**
+     * Save canvas contents as a PNG file
+     */
+    function saveAsPNG() {
+        // draw to canvas...
+        canvasAll.toBlob(function(blob) {
+            saveAs(blob, "canvas.png");
+        });
     }
 
 
@@ -486,9 +496,7 @@ var drawApp = (function () {
 
 
     /**
-     * Adds two numbers
-     * @param {Number} a 
-     * @return {Number} sum
+     * initModule - called from the index.html to start things off
      */
     var initModule = function () {
     
@@ -497,12 +505,8 @@ var drawApp = (function () {
             return;
         }
 
+        // UndoManager handles undo/redo/clear
         undoManager = new UndoManager();
-
-        function updateUI() {
-            $('#btnUndo').prop('disabled', !undoManager.hasUndo());
-            $('#btnRedo').prop('disabled', !undoManager.hasRedo());
-        }
 
         undoManager.setCallback(updateUI);
 
@@ -517,8 +521,10 @@ var drawApp = (function () {
 
         var $canvasTool = $canvasAll; // $("#canvasTool");
  
+        //
         // The general-purpose event handler. This function just determines the mouse 
         // position relative to the canvas element.
+        //
         function ev_canvas (ev) {
 
             ev._x = ev.pageX - $canvasTool.offset().left;
@@ -537,8 +543,14 @@ var drawApp = (function () {
         $canvasTool.mousemove (ev_canvas);
         $canvasTool.mouseup (ev_canvas);
 
+        //
+        // Setup the drawing options
+        //
         initDrawingOptions();
 
+        //
+        // Setup button event handlers
+        //
         $('#btnUndo').click (function () {
             undoManager.undo();
             updateUI();
@@ -554,25 +566,45 @@ var drawApp = (function () {
             updateUI();
         });
 
-        $('#btnLine').click (function () {
+        $('#btnSave').click (function () {
+            saveAsPNG();
+        });
+
+        $('#tool_line').click (function () {
+            $('.tool_button').removeClass('tool_button_current');
+            $('#tool_line').addClass ('tool_button_current');
             currentTool = new LineTool (contextTool);
         });
 
-        $('#btnCircle').click (function () {
+        $('#tool_circle').click (function () {
+            $('.tool_button').removeClass('tool_button_current');
+            $('#tool_circle').addClass ('tool_button_current');
             currentTool = new CircleTool (contextTool);
         });
 
-        $('#btnArc').click (function () {
+        $('#tool_arc').click (function () {
+            $('.tool_button').removeClass('tool_button_current');
+            $('#tool_arc').addClass ('tool_button_current');
             currentTool = new ArcTool (contextTool);
         });
 
-        $('#btnRectangle').click (function () {
+        $('#tool_rectangle').click (function () {
+            $('.tool_button').removeClass('tool_button_current');
+            $('#tool_rectangle').addClass ('tool_button_current');
             currentTool = new RectangleTool (contextTool);
         });
 
-        $('#btnPencil').click (function () {
+        $('#tool_pencil').click (function () {
+            $('.tool_button').removeClass('tool_button_current');
+            $('#tool_pencil').addClass ('tool_button_current');
             currentTool = new PencilTool (contextTool);
         });
+
+        //
+        // Start off with the Pencil tool
+        //
+        $('#tool_pencil').addClass ('tool_button_current');
+        currentTool = new PencilTool (contextTool);
 
         updateUI();        
     };

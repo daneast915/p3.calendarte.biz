@@ -4,22 +4,23 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8" /> 
         <title>Canvas Drawing App</title>
 
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" href="css/style.css" type="text/css">
         <link rel="stylesheet" href="css/spectrum.css" type="text/css">
         
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.min.js"></script>
+
         <script src="js/lib/modernizr.js"></script>
         <script src="js/lib/undomanager.js"></script>
         <script src="js/lib/spectrum.js"></script>
+        <script src="js/lib/Blob.js"></script>
+        <script src="js/lib/canvas-toBlob.js"></script>
+        <script src="js/lib/FileSaver.js"></script>
  
-        <!--
-        <script src="js/app/GeometryTools.js"></script>
-        -->
+
         <script src="js/app/Shapes.js"></script>
         <script src="js/app/drawApp.js"></script>
- 
 
         <!-- Initialize the SPA module when the document is ready -->
         <script>
@@ -28,6 +29,7 @@
             });
         </script>
     </head>  
+
     <body>
         <div class="container">
             <div id="canvas-div">
@@ -35,33 +37,21 @@
                     This app cannot be run with this browser. Try Chrome, Firefox, Opera, Safari or Internet Explorer 9+.
                 </canvas>
             </div>                
+
             <div id="shape-commands">
-                <button type="button" class="shape-btn" id="btnLine" href="#">Line</button>
-                <button type="button" class="shape-btn" id="btnRectangle" href="#">Rectangle</button>
-<!--
-                <button type="button" class="shape-btn" id="btnSquare" href="#">Square</button>
-                <button type="button" class="shape-btn" id="btnEllipse" href="#">Ellipse</button>
--->
-                <button type="button" class="shape-btn" id="btnCircle" href="#">Circle</button>
-                <button type="button" class="shape-btn" id="btnArc" href="#">Arc</button>
-                <button type="button" class="shape-btn" id="btnPencil" href="#">Pencil</button>
-
-                <div class="tool_button" id="tool_pencil" title="Pencil Tool">
-                </div>
-
-                <div class="tool_button" id="tool_line" title="Line Tool">
-                </div>
-
-                <div class="tool_button" id="tool_rect" title="Rectangle Tool">
-                </div>
-
-                <div class="tool_button_current" id="tool_circle" title="Circle Tool">
-                </div>
+                <div class="tool_button" id="tool_pencil" title="Pencil Tool" /></div>
+                <div class="tool_button" id="tool_line" title="Line Tool"></div>
+                <div class="tool_button" id="tool_rectangle" title="Rectangle Tool"></div>
+                <div class="tool_button" id="tool_circle" title="Circle Tool"></div>
             </div>
-            <div id="undo-commands">
-                <button type="button" class="btn btn-primary" id="btnUndo" href="#">Undo</button>
-                <button type="button" class="btn btn-primary" id="btnRedo" href="#">Redo</button>
-                <button type="button" class="btn btn-default pull-right" id="btnClear" href="#">Clear Undo History</button>
+
+            <div id="top-options">
+                <button class="history-button" type="button" id="btnUndo" href="#">Undo</button>
+                <button class="history-button" type="button" id="btnRedo" href="#">Redo</button>
+                <button class="history-button" type="button" id="btnClear" href="#">Clear History</button>
+                <button class="history-button" type="button" id="btnSave" href="#">Save</button>
+
+                <span class="separator"> </span>
 
                 <label for="lineColor">Line Color:</label>
                 <input type='text' id='lineColor' />
@@ -70,16 +60,13 @@
                 <input id="widthSpinner" name="lineWidth" />
 
                 <span id="fillOptions">
+                    <span class="separator"> </span>
                     <label for="fillOption">Fill:</label>
                     <input type="checkbox" id="fillOption" />  
                     <input type='text' id='fillColor' />      
                 </span>
             </div>
-            <!--
-            <div id="bottom-area">
-                <p class="comment mute">Click a tool on the left to start drawing.</p>
-            </div>
-            -->
+
         </div>
     </body>  
 </html>  

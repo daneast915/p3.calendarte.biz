@@ -1,9 +1,13 @@
+/**
+ * Allows Javascript inheritance
+ */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+
 /// <reference path="..\typings\jquery.d.ts" />
 //
 // Module containing Drawing Shapes
@@ -53,7 +57,7 @@ var Shapes;
                 this.height = options.height;
             if (undefined !== options.fill)
                 this.fill = options.fill;
-else
+            else
                 this.fill = false;
             if (undefined !== options.fillStyle)
                 this.fillStyle = options.fillStyle;
@@ -120,7 +124,7 @@ else
             this.radius = options.radius;
             if (undefined !== options.fill)
                 this.fill = options.fill;
-else
+            else
                 this.fill = false;
             if (undefined !== options.fillStyle)
                 this.fillStyle = options.fillStyle;
@@ -180,7 +184,7 @@ else
             this.endY = options.endY;
             if (undefined !== options.points)
                 this.points = options.points;
-else
+            else
                 this.points = [];
         }
         PencilDrawing.prototype.addPoint = function (point) {
